@@ -3,7 +3,9 @@ require "spec_helper"
 describe OFX::Parser::OFX211 do
   before do
     @ofx = OFX::Parser::Base.new("spec/fixtures/v211.ofx")
+    @ofx_one_line = OFX::Parser::Base.new("spec/fixtures/v211_one_line.ofx")
     @parser = @ofx.parser
+    @parser_one_line = @ofx_one_line.parser
   end
 
   it "should have a version" do
@@ -12,27 +14,34 @@ describe OFX::Parser::OFX211 do
 
   it "should set headers" do
     @parser.headers.should == @ofx.headers
+    @parser_one_line.headers.should == @ofx_one_line.headers
   end
 
   it "should set body" do
     @parser.body.should == @ofx.body
+    @parser_one_line.body.should == @ofx_one_line.body
   end
 
   it "should set account" do
     @parser.account.should be_a_kind_of(OFX::Account)
+    @parser_one_line.account.should be_a_kind_of(OFX::Account)
   end
 
   it "should set account" do
     @parser.sign_on.should be_a_kind_of(OFX::SignOn)
+    @parser_one_line.sign_on.should be_a_kind_of(OFX::SignOn)
   end
 
   it "should set accounts" do
     @parser.accounts.size.should == 2
+    @parser_one_line.accounts.size.should == 2
   end
 
   it "should set statements" do
     @parser.statements.size.should == 2
+    @parser_one_line.statements.size.should == 2
     @parser.statements.first.should be_a_kind_of(OFX::Statement)
+    @parser_one_line.statements.first.should be_a_kind_of(OFX::Statement)
   end
 
   context "transactions" do
@@ -41,6 +50,7 @@ describe OFX::Parser::OFX211 do
     context "first" do
       before do
         @t = @parser.accounts[0].transactions[0]
+        @t_one_line = @parser_one_line.accounts[0].transactions[0]
       end
 
       it "should contain the correct values" do
@@ -49,12 +59,19 @@ describe OFX::Parser::OFX211 do
         @t.memo.should be_empty
         @t.posted_at.should == Time.parse("2005-08-24 08:00:00 +0000")
         @t.name.should == "FrogKick Scuba Gear"
+
+        @t_one_line.amount.should == BigDecimal('-80')
+        @t_one_line.fit_id.should == "219378"
+        @t_one_line.memo.should be_empty
+        @t_one_line.posted_at.should == Time.parse("2005-08-24 08:00:00 +0000")
+        @t_one_line.name.should == "FrogKick Scuba Gear"
       end
     end
 
     context "second" do
       before do
         @t = @parser.accounts[1].transactions[0]
+        @t_one_line = @parser_one_line.accounts[1].transactions[0]
       end
 
       it "should contain the correct values" do
@@ -63,12 +80,19 @@ describe OFX::Parser::OFX211 do
         @t.memo.should be_empty
         @t.posted_at.should == Time.parse("2005-08-11 08:00:00 +0000")
         @t.name.should == "Interest Charge"
+
+        @t_one_line.amount.should == BigDecimal('-23')
+        @t_one_line.fit_id.should == "219867"
+        @t_one_line.memo.should be_empty
+        @t_one_line.posted_at.should == Time.parse("2005-08-11 08:00:00 +0000")
+        @t_one_line.name.should == "Interest Charge"
       end
     end
 
     context "third" do
       before do
         @t = @parser.accounts[1].transactions[1]
+        @t_one_line = @parser_one_line.accounts[1].transactions[1]
       end
 
       it "should contain the correct values" do
@@ -77,6 +101,12 @@ describe OFX::Parser::OFX211 do
         @t.memo.should be_empty
         @t.posted_at.should == Time.parse("2005-08-11 08:00:00 +0000")
         @t.name.should == "Payment - Thank You"
+
+        @t_one_line.amount.should == BigDecimal('350')
+        @t_one_line.fit_id.should == "219868"
+        @t_one_line.memo.should be_empty
+        @t_one_line.posted_at.should == Time.parse("2005-08-11 08:00:00 +0000")
+        @t_one_line.name.should == "Payment - Thank You"
       end
     end
   end

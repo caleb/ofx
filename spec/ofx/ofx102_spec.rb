@@ -3,7 +3,9 @@ require "spec_helper"
 describe OFX::Parser::OFX102 do
   before do
     @ofx = OFX::Parser::Base.new("spec/fixtures/sample.ofx")
+    @ofx_one_line = OFX::Parser::Base.new("spec/fixtures/sample_one_line.ofx")
     @parser = @ofx.parser
+    @parser_one_line = @ofx_one_line.parser
   end
 
   it "should have a version" do
@@ -12,6 +14,7 @@ describe OFX::Parser::OFX102 do
 
   it "should set headers" do
     @parser.headers.should == @ofx.headers
+    @parser_one_line.headers.should == @ofx_one_line.headers
   end
 
   it "should trim trailing whitespace from headers" do
@@ -21,19 +24,25 @@ describe OFX::Parser::OFX102 do
 
   it "should set body" do
     @parser.body.should == @ofx.body
+    @parser_one_line.body.should == @ofx_one_line.body
   end
 
   it "should set account" do
     @parser.account.should be_a_kind_of(OFX::Account)
+    @parser_one_line.account.should be_a_kind_of(OFX::Account)
   end
 
   it "should set account" do
     @parser.sign_on.should be_a_kind_of(OFX::SignOn)
+    @parser_one_line.sign_on.should be_a_kind_of(OFX::SignOn)
   end
 
   it "should set statements" do
     @parser.statements.size.should == 1
     @parser.statements.first.should be_a_kind_of(OFX::Statement)
+
+    @parser_one_line.statements.size.should == 1
+    @parser_one_line.statements.first.should be_a_kind_of(OFX::Statement)
   end
   
   it "should know about all transaction types" do

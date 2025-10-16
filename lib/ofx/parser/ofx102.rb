@@ -53,9 +53,16 @@ module OFX
       def self.parse_headers(header_text)
         # Change single CR's to LF's to avoid issues with some banks
         header_text.gsub!(/\r(?!\n)/, "\n")
+        
+        # If the header text is a single line, split on spaces
+        header_lines = if header_text.strip.count("\n") == 0
+          header_text = header_text.split(" ").map(&:strip)
+        else
+          header_text.to_enum(:each_line)
+        end
 
         # Parse headers. When value is NONE, convert it to nil.
-        headers = header_text.to_enum(:each_line).each_with_object({}) do |line, memo|
+        headers = header_lines.each_with_object({}) do |line, memo|
           _, key, value = *line.match(/^(.*?):(.*?)\s*(\r?\n)*$/)
 
           unless key.nil?

@@ -6,16 +6,26 @@ describe OFX do
       OFX("spec/fixtures/sample.ofx") do |ofx|
         ofx.class.should == OFX::Parser::OFX102
       end
+
+      OFX("spec/fixtures/sample_one_line.ofx") do |ofx|
+        ofx.class.should == OFX::Parser::OFX102
+      end
     end
 
     it "should be an OFX instance" do
       OFX("spec/fixtures/sample.ofx") do
         self.class.should == OFX::Parser::OFX102
       end
+
+      OFX("spec/fixtures/sample_one_line.ofx") do
+        self.class.should == OFX::Parser::OFX102
+      end
     end
 
     it "should return parser" do
       OFX("spec/fixtures/sample.ofx").class.should == OFX::Parser::OFX102
+
+      OFX("spec/fixtures/sample_one_line.ofx").class.should == OFX::Parser::OFX102
     end
   end
 end
